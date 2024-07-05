@@ -78,5 +78,6 @@ def args_parser():
     parser.add_argument('--regression_output_size', type=int, default=1, help="regression output size")
     parser.add_argument('--model', type=str, default='bilstm', help="model type")
     #parser.add_argument('--datasetpath', type=str, default='None', help="which datasetpath")
+    parser.add_argument('--loss_threshold', type=float, default=0.01, help='Loss threshold for early stopping')
     args = parser.parse_args()
     return args
