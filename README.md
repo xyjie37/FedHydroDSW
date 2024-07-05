@@ -1,6 +1,6 @@
 # FedHydroDSW
 This repository provides an improved version of https://github.com/zxq623/FedHydro that does not require Docker.
-## 0.data processing
+## 0.Data processing
 
 ### Download the dataset
 - Download the CAMELS dataset from https://ral.ucar.edu/solutions/products/camels
