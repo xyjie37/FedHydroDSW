@@ -14,6 +14,7 @@ This repository provides an improved version of https://github.com/zxq623/FedHyd
 ## requirements
 To achieve the best results, we suggest you use PyTorch == 1.11.0.
 ## how to run
+You can adjust the parameters in `utils/options.py`, and then run `main_fedhydro.py`.
 
 
 
