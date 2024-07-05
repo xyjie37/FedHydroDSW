@@ -12,7 +12,8 @@ This repository provides an improved version of https://github.com/zxq623/FedHyd
 - Create a class for loading the merged dataset in ./dataset/
 
 ## requirements
-To achieve the best results, we suggest you use PyTorch==1.11.0.
+To achieve the best results, we suggest you use PyTorch == 1.11.0.
 ## how to run
+
 
 
