@@ -87,18 +87,23 @@ class LocalUpdateHydro(object):
         local_eps = self.args.local_ep
         for iter in range(local_eps):
             batch_loss = []
+            # Check if the region is well-trained
+            if iter > 0 and abs(epoch_loss[-1] - epoch_loss[-2]) < 0.01:
+                self.args.local_bs //= 2  # Reduce batch size by half for well-trained regions
+                self.ldr_train = load_train_data(idxs, task, batch_size=self.args.local_bs)
+            elif iter > 0 and abs(epoch_loss[-1] - epoch_loss[-2]) >= 0.01:
+                self.args.local_bs = self.args.local_bs * 2  # Increase batch size for less-trained regions
+                self.ldr_train = load_train_data(idxs, task, batch_size=self.args.local_bs)
+
             for batch_idx, (images, labels) in enumerate(self.ldr_train):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)
-                labels = labels.float().unsqueeze(1)  # 确保 labels 是 Float 类型并且大小为 (batch_size, 1)
+                labels = labels.float().unsqueeze(1)  # Ensure labels are Float type and size (batch_size, 1)
                 logits = net(images)
                 
                 mse_loss = self.loss_func(logits, labels)
                 mae_loss = nn.L1Loss()(logits, labels)
-                #nse = self.calculate_nse(logits, labels)
-                #nse_loss = 1 - nse
                 gamma = 0.5 + (0.5 * iter) / 50 
 
-                #total_loss = gamma * mse_loss + (1 - gamma) * nse_loss
                 total_loss = gamma * mse_loss + (1-gamma) * mae_loss
 
                 optimizer.zero_grad()
