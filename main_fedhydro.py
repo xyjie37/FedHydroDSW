@@ -44,7 +44,7 @@ if __name__ == '__main__':
     lr = args.lr
     results = []
     
-    for iter in range(1):
+    for iter in range():
         w_glob = None
         loss_locals = []
         m = max(int(args.frac * args.num_users), 1)
