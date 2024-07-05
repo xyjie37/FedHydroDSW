@@ -79,27 +79,29 @@ class LocalUpdateHydro(object):
 
         # train and update
         body_params = [p for name, p in net.named_parameters() if 'linear' not in name]
-        
+
         optimizer = torch.optim.SGD(body_params, lr=lr, momentum=self.args.momentum, weight_decay=self.args.wd)
         scheduler = CosineAnnealingLR(optimizer, T_max=self.args.local_ep, eta_min=0)
         epoch_loss = []
-        
+
         local_eps = self.args.local_ep
         for iter in range(local_eps):
             batch_loss = []
             # Check if the region is well-trained
-            if iter > 0 and abs(epoch_loss[-1] - epoch_loss[-2]) < 0.01:
+            if len(epoch_loss) > 1 and abs(epoch_loss[-1] - epoch_loss[-2]) < 0.01:
                 self.args.local_bs //= 2  # Reduce batch size by half for well-trained regions
                 self.ldr_train = load_train_data(idxs, task, batch_size=self.args.local_bs)
-            elif iter > 0 and abs(epoch_loss[-1] - epoch_loss[-2]) >= 0.01:
+            elif len(epoch_loss) > 1 and abs(epoch_loss[-1] - epoch_loss[-2]) >= 0.01:
                 self.args.local_bs = self.args.local_bs * 2  # Increase batch size for less-trained regions
+                idxs=None
+                task=None
                 self.ldr_train = load_train_data(idxs, task, batch_size=self.args.local_bs)
 
             for batch_idx, (images, labels) in enumerate(self.ldr_train):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)
                 labels = labels.float().unsqueeze(1)  # Ensure labels are Float type and size (batch_size, 1)
                 logits = net(images)
-                
+
                 mse_loss = self.loss_func(logits, labels)
                 mae_loss = nn.L1Loss()(logits, labels)
                 gamma = 0.5 + (0.5 * iter) / 50 
