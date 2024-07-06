@@ -1,10 +1,9 @@
 import numpy as np
-from dataset.series_data.utils.camels_operate import CamelsOperate
+from camels_operate import CamelsOperate
 import sys as sys
 import pandas as pd
-from utils.constants import path
 from pathlib import Path
-
+path = '/root/pythonProject/dataset'
 
 class GenerateData:
     """产生多个流域数据合并版本数据集"""
@@ -164,19 +163,19 @@ def run_generate_data2(unit_code, the_date_range, basin_ids, node_count, time_st
                                 data_range=the_date_range, time_step=time_step, input_dim=5)
     train_x, train_y, test_x, test_y = hydroDataSet.generate()
     from utils.constants import path
-    with open(path + '\\train_'+str(basin_ids[-1])+'_unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_x.txt', 'w') as outfile:
+    with open(path + '\\train_'+str(basin_ids[-1])+'_Unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_x.txt', 'a') as outfile:
         for slice in train_x:
             np.savetxt(outfile, slice, fmt='%f', delimiter=' ')
 
-    with open(path + '\\train_'+str(basin_ids[-1])+'_unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_y.txt', 'w') as outfile:
+    with open(path + '\\train_'+str(basin_ids[-1])+'_Unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_y.txt', 'a') as outfile:
         for slice in train_y:
             np.savetxt(outfile, slice, fmt='%f', delimiter=' ')
 
-    with open(path + '\\test_'+str(basin_ids[-1])+'_unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_x.txt', 'w') as outfile:
+    with open(path + '\\test_'+str(basin_ids[-1])+'_Unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_x.txt', 'a') as outfile:
         for slice in test_x:
             np.savetxt(outfile, slice, fmt='%f', delimiter=' ')
 
-    with open(path + '\\test_'+str(basin_ids[-1])+'_unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_y.txt', 'w') as outfile:
+    with open(path + '\\test_'+str(basin_ids[-1])+'_Unit'+str(unit_code)+'_'+str(node_count)+'basins_t30_y.txt', 'a') as outfile:
         for slice in test_y:
             np.savetxt(outfile, slice, fmt='%f', delimiter=' ')
 
@@ -248,8 +247,10 @@ if __name__ == '__main__':
     # basin_ids = basin_ids[:3]
     node_count = len(basin_ids)
     time_step = 30
-    batch_size = 256 * node_count
+    batch_size = 256 * (node_count - 1)
     block_size = 256
+    batch_size_scarce = 64
+    block_size_scarce = 64
     date_range = {
         'train_date': {
             'start_date': pd.to_datetime("1980-10-01", format="%Y-%m-%d"),
@@ -261,8 +262,20 @@ if __name__ == '__main__':
             'end_date': pd.to_datetime("2002-09-30", format="%Y-%m-%d")  # 这里对应的是验证集，
         }
     }
+    date_range_scarce = {
+        'train_date': {
+            'start_date': pd.to_datetime("1980-10-01", format="%Y-%m-%d"),
+            'end_date': pd.to_datetime("1982-09-30", format="%Y-%m-%d")
+        },
+
+        'test_date': {
+            'start_date': pd.to_datetime("2000-10-01", format="%Y-%m-%d"),
+            'end_date': pd.to_datetime("2002-09-30", format="%Y-%m-%d")  # 这里对应的是验证集，
+        }
+    }
     # # # basin_ids = ['01030500', '01013500', '01031500']
-    run_generate_data2(unit_code, date_range, basin_ids, node_count, time_step, batch_size, block_size)
+    run_generate_data2(unit_code, date_range, basin_ids[:-1], node_count, time_step, batch_size, block_size)
+    run_generate_data2(unit_code, date_range_scarce, [basin_ids[-1]], node_count, time_step, batch_size_scarce, block_size_scarce)
 
     # """
     #    水文单元：01
