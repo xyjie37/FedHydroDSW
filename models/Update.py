@@ -105,9 +105,7 @@ class LocalUpdateHydro(object):
 
                 batch_loss.append(total_loss.item())
 
-                # 判断是否充分训练
                 if total_loss.item() < self.args.loss_threshold:
-                    # 如果损失值低于阈值，则认为该批次训练充分，只使用一半数据进行训练
                     half_batch_size = self.args.local_bs // 2
                     images = images[:half_batch_size]
                     labels = labels[:half_batch_size]
