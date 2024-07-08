@@ -15,6 +15,7 @@ This repository provides an improved version of https://github.com/zxq623/FedHyd
 To achieve the best results, we suggest using PyTorch == 1.11.0.
 ## How to run
 You can adjust the parameters in `utils/options.py`, and then run `main_fedhydro.py`.
-
+## Pretrained Model
+We provide two pretrained models on basin18,the code used to be test the model is under folder
 
 
