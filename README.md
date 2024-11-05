@@ -1,5 +1,6 @@
 # FedHydroDSW
 This repository provides an improved version of https://github.com/zxq623/FedHydro that does not require Docker.
+“Improving Adaptive Runoff Forecasts in Data-Scarce Watersheds Through Personalized Federated Learning” ICPR2024，oral
 ## Data processing
 
 ### Download the dataset
@@ -17,5 +18,4 @@ To achieve the best results, we suggest using PyTorch == 1.11.0.
 You can adjust the parameters in `utils/options.py`, and then run `main_fedhydro.py`.
 ## Pretrained Model
 We provide two pretrained models on basin18,the code used to be test the model is under folder /utils
-
 
